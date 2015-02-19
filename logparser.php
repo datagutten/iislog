@@ -9,7 +9,7 @@
 $output='html';
 require 'config.php';
 
-if(!isset($_GET['server']))
+if(!isset($_GET['server'])) //No server specified, show server selection
 {
 	echo "<p>Select server:</p>\n";
 	foreach(array_keys($logpath) as $server)
@@ -17,7 +17,7 @@ if(!isset($_GET['server']))
 		echo "<a href=\"?server=$server\">$server</a><br />\n";
 	}
 }
-elseif(!isset($logpath[$_GET['server']]))
+elseif(!isset($logpath[$_GET['server']])) //Server not found
 {
 		echo "Invalid server: {$_GET['server']}\n";
 }
@@ -35,7 +35,7 @@ else
 			echo "Log file not found: $logfile";
 }
 
-if(isset($data))
+if(isset($data)) //If data is loaded, show data
 {
 	echo "<table border=\"1\">\n";
 	
