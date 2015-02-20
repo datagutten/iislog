@@ -9,6 +9,17 @@
 $output='html';
 require 'config.php';
 
+function filterlink($key,$value,$symbol=' *',$urldecode=false)
+{
+	$get=$_GET; //Make a temporary copy of $_GET
+	$get['filter'][$key]=$value;
+	$filterstring=http_build_query($get,'','&amp');
+	if($urldecode)
+		$filterstring=urldecode($filterstring);
+	$filterlink="<a href=\"?$filterstring\">$symbol</a>";
+
+	return $filterlink;
+}
 if(!isset($_GET['server'])) //No server specified, show server selection
 {
 	echo "<p>Select server:</p>\n";
@@ -60,13 +71,13 @@ if(isset($data)) //If data is loaded, show data
 			if($output=='html')
 			{
 				echo "<tr>\n";
+				//unset($fields['date']);
 				foreach ($fields as $fieldkey=>$field)
 				{
-					$filter=array_merge($_GET,array($fieldkey => $field));
-					unset($filter['server']);
-					$filterstring=http_build_query(array('server'=>$_GET['server'],'filter'=>$filter),'','&amp;');
+					$filterlink=filterlink($fieldkey,$field);
+					if($field=='-')
+						$filterlink='';
 
-					$filterlink="<a href=\"?$filterstring\">*</a>";
 					echo "\t<td>".urldecode($field)." $filterlink</td>\n";
 				}
 				echo "</tr>\n";
@@ -92,6 +103,12 @@ if(isset($data)) //If data is loaded, show data
 		}
 	
 	}
+}
+echo "</table>\n";
+if(isset($_GET['filter']))
+{
+	unset($_GET['filter']);
+	echo "<a href=\"?".http_build_query($_GET)."\">Clear filters</a>\n";
 }
 ?>
 </body>
